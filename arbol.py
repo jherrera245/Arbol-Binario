@@ -40,14 +40,35 @@ class Tree:
                 nodoTemporal  = self
                 nodoIzquierda = self.izquierda.predecessor()
                 self.data = nodoIzquierda.data
-                nodoTemporal.izquierda = nodoTemporal.remove(nodoIzquierda)
+                nodoTemporal.izquierda = nodoTemporal.izquierda.remove(nodoIzquierda.data)
             elif self.izquierda is not None:
                 nodo = self.izquierda
             elif self.derecha is not None:
                 nodo = self.derecha
             else:
                 nodo = None
-        return nodo                
+        return nodo 
+
+    #buscar un elemento del arbol
+    def search(self, data):
+        return self.findInNode(self, data)
+
+    def findInNode(self, node, data):
+        if node is None:
+            return False
+        elif isinstance(node.data, Tree):
+            if isinstance(node.data.izquierda, Tree):
+                return self.findInNode(node.data.izquierda, data)
+            elif isinstance(node.data.derecha, Tree):
+                return self.findInNode(node.data.derecha, data)
+        elif data < node.data:
+            return self.findInNode(node.izquierda, data)
+        elif data > node.data:
+            return self.findInNode(node.derecha, data)
+        elif data == node.data:
+            return True
+        else:
+            return False
 
     #recolectar los datos desde la raiz desde la izquierda
     def preorder(self, lista = list()):
@@ -84,36 +105,3 @@ class Tree:
         lista.append(self.data)
 
         return lista
-
-#importando libreria random
-import random
-
-arbol = Tree(30)
-
-#cargamos los datos al rabol de forma aleatorio.
-for i in range(0, 99):
-    arbol.add(random.randrange(1, 1000, 1))
-
-print("Barridos")
-preorder = arbol.preorder()
-inorder = arbol.inorder()
-postorder = arbol.postorder()
-
-print("Barrido preorder", preorder)
-print("\nBarrido postorder", postorder)
-print("\nBarrido inorder", inorder)
-
-
-# idea para contar los numeros pares
-pares = 0
-for  valor in inorder:
-    if valor%2 == 0:
-        pares += 1
-
-print("Pares ", pares)
-
-# de nuestros datos escoger el valor a eliminar
-remover = input("Que valor quieres remover: ")
-remover = int(remover)
-
-arbol.remove(remover)
